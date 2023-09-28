@@ -5,26 +5,26 @@ metadata:
 spec:
   selector:
     matchLabels:
-      app: grpc-ext-proc
+      app: ext-proc-grpc
   replicas: 1
   template:
     metadata:
       labels:
-        app: grpc-ext-proc
+        app: ext-proc-grpc
     spec:
       containers:
-        - name: grpc-ext-proc
+        - name: ext-proc-grpc
           image: gcr.io/solo-test-236622/ext-proc-example-basic-sink:0.0.1
-          imagePullPolicy: Always
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 18080
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: example-grpc-ext-proc
+  name: ext-proc-grpc
   labels:
-    app: grpc-ext-proc
+    app: ext-proc-grpc
   annotations:
     gloo.solo.io/h2_service: "true"
 spec:
@@ -32,4 +32,4 @@ spec:
   - port:  18080
     protocol: TCP
   selector:
-    app: grpc-ext-proc
+    app: ext-proc-grpc
