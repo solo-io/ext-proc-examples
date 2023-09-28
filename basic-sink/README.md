@@ -26,6 +26,9 @@ request or response header processing mode is set to `SEND` (or `DEFAULT` since 
 
 *Modifying the body or trailers has not been tested and may not work as expected.*
 
+## Compatiblity
+
+This sample app currently depends on a go-control-plane fork based on envoy changes that have not been merged upstream. It has been tested to work with Gloo Edge 1.15.x (which contains the same go-control-plane dependency) but may not work with newer versions of Gloo Edge.
 ## Updating
 
 The basic-sink service is currently published as image `gcr.io/solo-test-236622/ext-proc-example-basic-sink:<TAG>`
