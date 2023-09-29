@@ -3,7 +3,7 @@ global:
     extProc:
       grpcService:
         extProcServerRef:
-          name: default-ext-proc-grpc-18080
+          name: default-ext-proc-grpc-4444
           namespace: gloo-system
       filterStage:
         stage: AuthZStage

@@ -29,7 +29,8 @@ metadata:
     gloo.solo.io/h2_service: "true"
 spec:
   ports:
-  - port:  18080
+  - port: 4444
+    targetPort: 18080
     protocol: TCP
   selector:
     app: ext-proc-grpc
