@@ -179,6 +179,7 @@ func (s *server) Process(srv service_ext_proc_v3.ExternalProcessor_ProcessServer
 		// At this point we believe we have created a valid response...
 		// note that this is sometimes not the case
 		// anyways for now just send it
+		log.Printf("Sending ProcessingResponse: %v", resp)
 		if err := srv.Send(resp); err != nil {
 			log.Printf("send error %v", err)
 			return err
