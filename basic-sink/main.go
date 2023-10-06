@@ -52,7 +52,7 @@ func (s *healthServer) Watch(in *grpc_health_v1.HealthCheckRequest, srv grpc_hea
 }
 
 func (s *server) Process(srv service_ext_proc_v3.ExternalProcessor_ProcessServer) error {
-	log.Printf("Handling grpc stream open ctx: %v", srv.Context())
+	log.Printf("Process")
 	ctx := srv.Context()
 	for {
 		select {
@@ -75,7 +75,7 @@ func (s *server) Process(srv service_ext_proc_v3.ExternalProcessor_ProcessServer
 		resp := &service_ext_proc_v3.ProcessingResponse{}
 		switch v := req.Request.(type) {
 		case *service_ext_proc_v3.ProcessingRequest_RequestHeaders:
-			log.Printf("Got RequestHeaders: %v", v)
+			log.Printf("Got RequestHeaders")
 
 			// resp = &service_ext_proc_v3.ProcessingResponse{
 			// 	DynamicMetadata: &ptypes_struct.Struct{Fields: map[string]*structpb.Value{
@@ -95,7 +95,7 @@ func (s *server) Process(srv service_ext_proc_v3.ExternalProcessor_ProcessServer
 			}
 
 		case *service_ext_proc_v3.ProcessingRequest_RequestBody:
-			log.Printf("Got RequestBody (not currently handled): %v", v)
+			log.Printf("Got RequestBody (not currently handled)")
 
 			// b := req.Request.(*service_ext_proc_v3.ProcessingRequest_RequestBody)
 			// log.Printf("RequestBody.Body: %s", string(b.RequestBody.Body))
@@ -131,10 +131,10 @@ func (s *server) Process(srv service_ext_proc_v3.ExternalProcessor_ProcessServer
 			// 	}
 			// }
 		case *service_ext_proc_v3.ProcessingRequest_RequestTrailers:
-			log.Printf("Got RequestTrailers (not currently handled): %v", v)
+			log.Printf("Got RequestTrailers (not currently handled)")
 
 		case *service_ext_proc_v3.ProcessingRequest_ResponseHeaders:
-			log.Printf("Got ResponseHeaders: %v", v)
+			log.Printf("Got ResponseHeaders")
 
 			h := req.Request.(*service_ext_proc_v3.ProcessingRequest_ResponseHeaders)
 			headersResp, err := getHeadersResponseFromInstructions(h.ResponseHeaders)
@@ -148,7 +148,7 @@ func (s *server) Process(srv service_ext_proc_v3.ExternalProcessor_ProcessServer
 			}
 
 		case *service_ext_proc_v3.ProcessingRequest_ResponseBody:
-			log.Printf("Got ResponseBody (not currently handled): %v", v)
+			log.Printf("Got ResponseBody (not currently handled)")
 
 			// b := req.Request.(*service_ext_proc_v3.ProcessingRequest_ResponseBody)
 			// log.Printf("ResponseBody.Body: %s", string(b.ResponseBody.Body))
@@ -170,7 +170,7 @@ func (s *server) Process(srv service_ext_proc_v3.ExternalProcessor_ProcessServer
 			// 	}
 			// }
 		case *service_ext_proc_v3.ProcessingRequest_ResponseTrailers:
-			log.Printf("Got ResponseTrailers (not currently handled): %v", v)
+			log.Printf("Got ResponseTrailers (not currently handled)")
 
 		default:
 			log.Printf("Unknown Request type %v", v)
@@ -179,7 +179,7 @@ func (s *server) Process(srv service_ext_proc_v3.ExternalProcessor_ProcessServer
 		// At this point we believe we have created a valid response...
 		// note that this is sometimes not the case
 		// anyways for now just send it
-		log.Printf("Sending ProcessingResponse: %v", resp)
+		log.Printf("Sending ProcessingResponse")
 		if err := srv.Send(resp); err != nil {
 			log.Printf("send error %v", err)
 			return err
