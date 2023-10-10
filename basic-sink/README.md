@@ -1,4 +1,4 @@
-# basic-sink
+# Basic Sink
 
 ## Usage
 
@@ -26,11 +26,18 @@ request or response header processing mode is set to `SEND` (or `DEFAULT` since 
 
 *Modifying the body or trailers has not been tested and may not work as expected.*
 
-## Compatiblity
+## Compatibility
 
-This sample app currently depends on a go-control-plane fork based on envoy changes that have not been merged upstream. It has been tested to work with Gloo Edge 1.15.x (which contains the same go-control-plane dependency) but may not work with newer versions of Gloo Edge.
+This sample app currently depends on a `go-control-plane` fork based on envoy changes that have not been merged upstream. It has been tested to work with Gloo Edge 1.15.x (which contains the same go-control-plane dependency) but may not work with newer versions of Gloo Edge.
 
-## Updating
+## Building Locally
+
+To build and use the service locally:
+1. Create a kind cluster: `kind create cluster --name <cluster>`
+1. Compile the extproc service using: `make TAG=<tag> all`
+1. Load onto kind cluster: `kind load docker-image gcr.io/solo-test-236622/ext-proc-example-basic-sink:<tag> --name <cluster>`
+
+## Publishing New Versions
 
 The basic-sink service is currently published as image `gcr.io/solo-test-236622/ext-proc-example-basic-sink:<TAG>`
 and used in Gloo Edge e2e tests.
@@ -43,29 +50,30 @@ To make changes to the service:
 ## Example Configuration in Gloo Edge
 
 The [resources](./resources) folder contains example configuration for setting up Gloo Edge
-to use the external processing service. Here are steps for a simple setup:
+to use the external processing service. To demonstrate a simple setup, you can either run the script [basic-demo.sh](./basic-demo.sh) or follow the steps one-by-one below:
 
-Create a kind cluster:
+1. Create a kind cluster:
 ```
-kind create cluster --name test --image "kindest/node:v1.27.3"
+kind create cluster --name <cluster>
 ```
-Install a recent version of Gloo Edge, with a values file that initializes extproc settings:
+2. Install a recent version of Gloo Edge, with a values file that initializes extproc settings:
 ```
 helm install -n gloo-system gloo-ee gloo-ee/gloo-ee --create-namespace --set-string license_key=$GLOO_LICENSE_KEY --set gloo-fed.enabled=false --version v1.15.2 -f resources/values.yaml
 ```
-Apply the Deployment and Service for the extproc service:
+
+3. Apply the Deployment and Service for the extproc service (note that if you are using a locally-built image, you may need to change the image tag in the below yaml before applying it):
 ```
 kubectl apply -f resources/extproc.yaml
 ```
-Create a VirtualService that routes to httpbin:
+4. Create a VirtualService that routes to httpbin:
 ```
 kubectl apply -f resources/httpbin.yaml
 kubectl apply -f resources/vs.yaml
 ```
 
-Send traffic through the VS, with extproc instructions in the header:
+Now you can send traffic through the VS, with extproc instructions in the header:
 ```
-kubectl port-forward -n gloo-system deploy/gateway-proxy 8080&
+kubectl port-forward -n gloo-system deploy/gateway-proxy 8080
 
 curl -v localhost:8080/get -H "header1: value1" -H "header2: value2" -H 'instructions: {"addHeaders":{"header3":"value3","header4":"value4"},"removeHeaders":["instructions", "header2"]}'
 ```
