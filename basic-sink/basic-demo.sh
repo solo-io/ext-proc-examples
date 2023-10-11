@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 CLUSTER=test
 GLOO_EE_VERSION=v1.15.2
 
