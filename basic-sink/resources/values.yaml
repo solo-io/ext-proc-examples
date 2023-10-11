@@ -1,0 +1,17 @@
+global:
+  extensions:
+    extProc:
+      grpcService:
+        extProcServerRef:
+          name: default-ext-proc-grpc-4444
+          namespace: gloo-system
+      filterStage:
+        stage: AuthZStage
+        predicate: After
+      processingMode:
+        requestHeaderMode: SEND
+        responseHeaderMode: SEND
+        requestBodyMode: BUFFERED
+        responseBodyMode: BUFFERED
+        requestTrailerMode: SEND
+        responseTrailerMode: SEND
