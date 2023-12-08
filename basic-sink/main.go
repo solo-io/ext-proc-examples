@@ -224,7 +224,7 @@ func main() {
 func getInstructionsFromHeaders(in *service_ext_proc_v3.HttpHeaders) string {
 	for _, n := range in.Headers.Headers {
 		if n.Key == "instructions" {
-			return n.Value
+			return string(n.RawValue)
 		}
 	}
 	return ""
@@ -255,7 +255,7 @@ func getHeadersResponseFromInstructions(in *service_ext_proc_v3.HttpHeaders) (*s
 		var addHeaders []*core_v3.HeaderValueOption
 		for k, v := range instructions.AddHeaders {
 			addHeaders = append(addHeaders, &core_v3.HeaderValueOption{
-				Header: &core_v3.HeaderValue{Key: k, Value: v},
+				Header: &core_v3.HeaderValue{Key: k, RawValue: []byte(v)},
 			})
 		}
 		resp.Response.HeaderMutation = &service_ext_proc_v3.HeaderMutation{
