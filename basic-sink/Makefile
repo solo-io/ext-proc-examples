@@ -1,6 +1,6 @@
 # this is the latest tag that has been pushed
 # if changes are made to the service, this tag should be updated before pushing
-TAG ?= 0.0.1
+TAG ?= 0.0.2
 
 .PHONY: docker-local server
 all: server docker-local
