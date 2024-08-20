@@ -1,3 +1,4 @@
+# OBSOLETE with Gloo Gateway v1.17+. Prefer HTTPRoute instead.
 apiVersion: gateway.solo.io/v1
 kind: VirtualService
 metadata:
