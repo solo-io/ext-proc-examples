@@ -11,7 +11,9 @@ kind create cluster --name $CLUSTER
 # Install Gateway API CRDs
 kubectl apply -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.0.0/standard-install.yaml
 
-# Install a recent version of Gloo Gateway, with a values file that initializes extproc settings:
+# Install a recent version of Gloo Gateway Enterprise, with a values file that initializes extproc settings:
+helm repo add glooe https://storage.googleapis.com/gloo-ee-helm
+helm repo update
 helm install -n gloo-system gloo-gateway glooe/gloo-ee --create-namespace --set-string license_key=$GLOO_LICENSE_KEY --set gloo-fed.enabled=false --version $GLOO_EE_VERSION -f resources/values.yaml
 
 # Apply the Deployment and Service for the extproc service (note that if you are using a locally-built image, you may need to change the image tag in the below yaml before applying it):

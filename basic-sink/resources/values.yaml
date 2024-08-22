@@ -1,4 +1,7 @@
 global:
+  gloo:
+    kubeGateway:
+      enabled: true
   extensions:
     extProc:
       grpcService:
