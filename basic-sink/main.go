@@ -92,7 +92,7 @@ func (s *server) Process(srv service_ext_proc_v3.ExternalProcessor_ProcessServer
 			log.Printf("Got RequestBody (not currently handled)")
 
 		case *service_ext_proc_v3.ProcessingRequest_RequestTrailers:
-			log.Printf("Got RequestTrailers")
+			log.Printf("Got RequestTrailers (not currently handled)")
 
 		case *service_ext_proc_v3.ProcessingRequest_ResponseHeaders:
 			log.Printf("Got ResponseHeaders")
@@ -112,7 +112,7 @@ func (s *server) Process(srv service_ext_proc_v3.ExternalProcessor_ProcessServer
 			log.Printf("Got ResponseBody (not currently handled)")
 
 		case *service_ext_proc_v3.ProcessingRequest_ResponseTrailers:
-			log.Printf("Got ResponseTrailers")
+			log.Printf("Got ResponseTrailers (not currently handled)")
 
 		default:
 			log.Printf("Unknown Request type %v", v)
