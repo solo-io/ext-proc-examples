@@ -15,3 +15,6 @@ global:
         responseBodyMode: BUFFERED
         requestTrailerMode: SEND
         responseTrailerMode: SEND
+gloo:
+  kubeGateway:
+    enabled: true

@@ -77,12 +77,6 @@ func (s *server) Process(srv service_ext_proc_v3.ExternalProcessor_ProcessServer
 		case *service_ext_proc_v3.ProcessingRequest_RequestHeaders:
 			log.Printf("Got RequestHeaders")
 
-			// resp = &service_ext_proc_v3.ProcessingResponse{
-			// 	DynamicMetadata: &ptypes_struct.Struct{Fields: map[string]*structpb.Value{
-			// 		"metaKey": {Kind: &structpb.Value_StringValue{StringValue: "hello from meta"}},
-			// 	}},
-			// }
-
 			h := req.Request.(*service_ext_proc_v3.ProcessingRequest_RequestHeaders)
 			headersResp, err := getHeadersResponseFromInstructions(h.RequestHeaders)
 			if err != nil {
@@ -97,39 +91,6 @@ func (s *server) Process(srv service_ext_proc_v3.ExternalProcessor_ProcessServer
 		case *service_ext_proc_v3.ProcessingRequest_RequestBody:
 			log.Printf("Got RequestBody (not currently handled)")
 
-			// b := req.Request.(*service_ext_proc_v3.ProcessingRequest_RequestBody)
-			// log.Printf("RequestBody.Body: %s", string(b.RequestBody.Body))
-			// log.Printf("RequestBody.EndOfStream: %T", b.RequestBody.EndOfStream)
-			// if b.RequestBody.EndOfStream {
-			// 	bytesToSend := append(b.RequestBody.Body, []byte(`-- I modified this request body!`)...)
-			// 	resp = &service_ext_proc_v3.ProcessingResponse{
-			// 		Response: &service_ext_proc_v3.ProcessingResponse_RequestBody{
-			// 			RequestBody: &service_ext_proc_v3.BodyResponse{
-			// 				Response: &service_ext_proc_v3.CommonResponse{
-			// 					HeaderMutation: &service_ext_proc_v3.HeaderMutation{
-			// 						SetHeaders: []*core_v3.HeaderValueOption{
-			// 							{
-			// 								Header: &core_v3.HeaderValue{
-			// 									Key:   "Content-Length",
-			// 									Value: strconv.Itoa(len(bytesToSend)),
-			// 								},
-			// 							},
-			// 						},
-			// 					},
-			// 					BodyMutation: &service_ext_proc_v3.BodyMutation{
-			// 						Mutation: &service_ext_proc_v3.BodyMutation_Body{
-			// 							Body: bytesToSend,
-			// 						},
-			// 					},
-			// 				},
-			// 			},
-			// 		},
-			// 		ModeOverride: &ext_proc_v3.ProcessingMode{
-			// 			ResponseHeaderMode: ext_proc_v3.ProcessingMode_SEND,
-			// 			ResponseBodyMode:   ext_proc_v3.ProcessingMode_NONE,
-			// 		},
-			// 	}
-			// }
 		case *service_ext_proc_v3.ProcessingRequest_RequestTrailers:
 			log.Printf("Got RequestTrailers (not currently handled)")
 
@@ -150,25 +111,6 @@ func (s *server) Process(srv service_ext_proc_v3.ExternalProcessor_ProcessServer
 		case *service_ext_proc_v3.ProcessingRequest_ResponseBody:
 			log.Printf("Got ResponseBody (not currently handled)")
 
-			// b := req.Request.(*service_ext_proc_v3.ProcessingRequest_ResponseBody)
-			// log.Printf("ResponseBody.Body: %s", string(b.ResponseBody.Body))
-			// log.Printf("ResponseBody.EndOfStream: %T", b.ResponseBody.EndOfStream)
-			// if b.ResponseBody.EndOfStream {
-			// 	bytesToSend := append(b.ResponseBody.Body, []byte(`-- I modified this response body!`)...)
-			// 	resp = &service_ext_proc_v3.ProcessingResponse{
-			// 		Response: &service_ext_proc_v3.ProcessingResponse_ResponseBody{
-			// 			ResponseBody: &service_ext_proc_v3.BodyResponse{
-			// 				Response: &service_ext_proc_v3.CommonResponse{
-			// 					BodyMutation: &service_ext_proc_v3.BodyMutation{
-			// 						Mutation: &service_ext_proc_v3.BodyMutation_Body{
-			// 							Body: bytesToSend,
-			// 						},
-			// 					},
-			// 				},
-			// 			},
-			// 		},
-			// 	}
-			// }
 		case *service_ext_proc_v3.ProcessingRequest_ResponseTrailers:
 			log.Printf("Got ResponseTrailers (not currently handled)")
 
