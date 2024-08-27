@@ -1,4 +1,4 @@
-// based on https://github.com/salrashid123/envoy_ext_proc
+// based on https://github.com/salrashid123/envoy_ext_proc/blob/eca3b3a89929bf8cb80879ba553798ecea1c5622/grpc_server.go
 
 package main
 
