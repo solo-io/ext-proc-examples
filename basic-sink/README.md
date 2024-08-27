@@ -87,3 +87,7 @@ This should result in a response showing headers similar to the following (`head
     ...
   }
 ```
+
+## References
+
+This code was originally based on the sample server from https://github.com/salrashid123/envoy_ext_proc
