@@ -1,0 +1,17 @@
+apiVersion: gloo.solo.io/v1
+kind: Upstream
+metadata:
+  labels:
+    app: ext-proc-log-body
+    discovered_by: kubernetesplugin
+  name: ext-proc-log-body
+  namespace: gloo-system
+spec:
+  discoveryMetadata: {}
+  useHttp2: true
+  kube:
+    selector:
+      app: ext-proc-log-body
+    serviceName: ext-proc-log-body
+    serviceNamespace: gloo-system
+    servicePort: 4444

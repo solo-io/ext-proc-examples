@@ -1,0 +1,38 @@
+global:
+  extensions:
+    extProc:
+      allowModeOverride: true
+      failureModeAllow: true
+      grpcService:
+        extProcServerRef:
+          name: ext-proc-log-body
+          namespace: gloo-system
+      filterStage:
+        stage: AuthZStage
+        predicate: After
+      processingMode:
+        requestHeaderMode: SEND
+        responseHeaderMode: SEND
+        requestBodyMode: STREAMED
+        responseBodyMode: STREAMED
+        requestTrailerMode: SEND
+        responseTrailerMode: SEND
+      asyncMode: true
+gloo:
+  gatewayProxies:
+    gatewayProxy:
+      disabled: true
+  kubeGateway:
+    enabled: true
+  gloo:
+    disableLeaderElection: true
+gloo-fed:
+  enabled: false
+  glooFedApiServer:
+    enable: false
+grafana:
+  defaultInstallationEnabled: false
+observability:
+  enabled: false
+prometheus:
+  enabled: false
