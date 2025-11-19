@@ -2,3 +2,4 @@
 .idea
 .env
 _output
+.DS_Store

@@ -1,0 +1,25 @@
+apiVersion: gateway.solo.io/v1
+kind: HttpListenerOption
+metadata:
+  name: http-list-options
+  namespace: apps-config
+spec:
+  targetRefs:
+    - group: gateway.networking.k8s.io
+      kind: Gateway
+      name: main-gw
+      sectionName: http
+  options:
+    extProc:
+      grpcService:
+        extProcServerRef:
+          name: ext-proc-routing-upstream
+          namespace: ext-proc
+      allowModeOverride: false
+      failureModeAllow: false
+      processingMode:
+        requestHeaderMode: SEND
+        responseHeaderMode: SKIP
+      filterStage:
+        stage: AuthZStage
+        predicate: After
