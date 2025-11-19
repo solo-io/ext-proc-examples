@@ -1,0 +1,80 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: rs 
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: route-list 
+  namespace: rs
+data:
+  route-list.json: |
+    {
+      "route-keys": [
+        "foo",
+        "bar"
+      ]
+    }
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: routing-service
+  namespace: rs
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: routing-service
+  namespace: rs
+  labels:
+    app: routing-service
+    service: routing-service
+spec:
+  ports:
+    - name: http
+      port: 9080
+      targetPort: 9080
+  selector:
+    app: routing-service
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: routing-service
+  namespace: rs
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: routing-service
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: routing-service
+        version: v1
+    spec:
+      serviceAccountName: routing-service
+      containers:
+        - name: routing-service
+          image: australia-southeast1-docker.pkg.dev/solo-test-236622/apac/randomise-route-keys:v0.1.0
+          imagePullPolicy: IfNotPresent
+          args:
+            - "-port"
+            - "9080"
+          ports:
+            - containerPort: 9080
+          env:
+            - name: LOG_LEVEL
+              value: "debug"
+            - name: ROUTE_LIST_FILE_PATH
+              value: /etc/config/route-list.json
+          volumeMounts:
+            - mountPath: /etc/config
+              name: route-list-config
+      volumes:
+        - name: route-list-config
+          configMap:
+            name: route-list

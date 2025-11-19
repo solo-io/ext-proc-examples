@@ -1,0 +1,65 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: ext-proc
+---
+apiVersion: gloo.solo.io/v1
+kind: Upstream
+metadata:
+  name: ext-proc-routing-upstream 
+  namespace: ext-proc
+  labels:
+    app: ext-proc-routing 
+spec:
+  useHttp2: true
+  kube:
+    selector:
+      app: ext-proc-routing
+    serviceName: ext-proc-routing
+    serviceNamespace: ext-proc 
+    servicePort: 9080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ext-proc-routing
+  namespace: ext-proc
+  labels:
+    app: ext-proc-routing
+spec:
+  ports:
+    - port: 9080
+      targetPort: 9080
+      protocol: TCP
+  selector:
+    app: ext-proc-routing
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ext-proc-routing
+  namespace: ext-proc
+spec:
+  selector:
+    matchLabels:
+      app: ext-proc-routing
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: ext-proc-routing
+    spec:
+      containers:
+        - name: ext-proc-log-routing
+          image: australia-southeast1-docker.pkg.dev/solo-test-236622/apac/ext-proc-routing-decision:v0.1.0
+          imagePullPolicy: IfNotPresent
+          args:
+            - "--port"
+            - "9080"
+          ports:
+            - containerPort: 9080
+          env:
+            - name: LOG_LEVEL
+              value: "debug"
+            - name: ROUTING_DECISION_SERVER
+              value: "http://routing-service.rs.svc:9080"
