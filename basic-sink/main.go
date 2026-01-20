@@ -51,6 +51,14 @@ func (s *healthServer) Watch(in *grpc_health_v1.HealthCheckRequest, srv grpc_hea
 	return status.Error(codes.Unimplemented, "Watch is not implemented")
 }
 
+func (s *healthServer) List(ctx context.Context, in *grpc_health_v1.HealthListRequest) (*grpc_health_v1.HealthListResponse, error) {
+	return &grpc_health_v1.HealthListResponse{
+		Statuses: map[string]*grpc_health_v1.HealthCheckResponse{
+			"": {Status: grpc_health_v1.HealthCheckResponse_SERVING},
+		},
+	}, nil
+}
+
 func (s *server) Process(srv service_ext_proc_v3.ExternalProcessor_ProcessServer) error {
 	log.Printf("Process")
 	ctx := srv.Context()
@@ -89,9 +97,26 @@ func (s *server) Process(srv service_ext_proc_v3.ExternalProcessor_ProcessServer
 			}
 
 		case *service_ext_proc_v3.ProcessingRequest_RequestBody:
-			log.Printf("Got RequestBody (not currently handled)")
-			resp.Response = &service_ext_proc_v3.ProcessingResponse_RequestBody{}
+			log.Printf("Got RequestBody - forwarding")
 
+			h := req.Request.(*service_ext_proc_v3.ProcessingRequest_RequestBody)
+
+			resp = &service_ext_proc_v3.ProcessingResponse{
+				Response: &service_ext_proc_v3.ProcessingResponse_RequestBody{
+					RequestBody: &service_ext_proc_v3.BodyResponse{
+						Response: &service_ext_proc_v3.CommonResponse{
+							BodyMutation: &service_ext_proc_v3.BodyMutation{
+								Mutation: &service_ext_proc_v3.BodyMutation_StreamedResponse{
+									StreamedResponse: &service_ext_proc_v3.StreamedBodyResponse{
+										Body:        h.RequestBody.Body,
+										EndOfStream: h.RequestBody.EndOfStream,
+									},
+								},
+							},
+						},
+					},
+				},
+			}
 		case *service_ext_proc_v3.ProcessingRequest_RequestTrailers:
 			log.Printf("Got RequestTrailers (not currently handled)")
 			resp.Response = &service_ext_proc_v3.ProcessingResponse_RequestTrailers{}
@@ -111,8 +136,26 @@ func (s *server) Process(srv service_ext_proc_v3.ExternalProcessor_ProcessServer
 			}
 
 		case *service_ext_proc_v3.ProcessingRequest_ResponseBody:
-			log.Printf("Got ResponseBody (not currently handled)")
-			resp.Response = &service_ext_proc_v3.ProcessingResponse_ResponseBody{}
+			log.Printf("Got ResponseBody - forwarding")
+
+			h := req.Request.(*service_ext_proc_v3.ProcessingRequest_ResponseBody)
+
+			resp = &service_ext_proc_v3.ProcessingResponse{
+				Response: &service_ext_proc_v3.ProcessingResponse_ResponseBody{
+					ResponseBody: &service_ext_proc_v3.BodyResponse{
+						Response: &service_ext_proc_v3.CommonResponse{
+							BodyMutation: &service_ext_proc_v3.BodyMutation{
+								Mutation: &service_ext_proc_v3.BodyMutation_StreamedResponse{
+									StreamedResponse: &service_ext_proc_v3.StreamedBodyResponse{
+										Body:        h.ResponseBody.Body,
+										EndOfStream: h.ResponseBody.EndOfStream,
+									},
+								},
+							},
+						},
+					},
+				},
+			}
 
 		case *service_ext_proc_v3.ProcessingRequest_ResponseTrailers:
 			log.Printf("Got ResponseTrailers (not currently handled)")
