@@ -51,6 +51,14 @@ func (s *healthServer) Watch(in *grpc_health_v1.HealthCheckRequest, srv grpc_hea
 	return status.Error(codes.Unimplemented, "Watch is not implemented")
 }
 
+func (s *healthServer) List(ctx context.Context, in *grpc_health_v1.HealthListRequest) (*grpc_health_v1.HealthListResponse, error) {
+	return &grpc_health_v1.HealthListResponse{
+		Statuses: map[string]*grpc_health_v1.HealthCheckResponse{
+			"": {Status: grpc_health_v1.HealthCheckResponse_SERVING},
+		},
+	}, nil
+}
+
 func (s *server) Process(srv service_ext_proc_v3.ExternalProcessor_ProcessServer) error {
 	log.Printf("Process")
 	ctx := srv.Context()
