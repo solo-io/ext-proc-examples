@@ -12,6 +12,7 @@ import (
 	"os"
 	"os/signal"
 	"strconv"
+	"strings"
 	"syscall"
 	"time"
 
@@ -24,7 +25,8 @@ import (
 )
 
 var (
-	grpcport = flag.String("grpcport", ":18080", "grpcport")
+	grpcport  = flag.String("grpcport", ":18080", "grpcport")
+	addHeader = flag.String("add-header", "", "header to always add to processed requests in key:value format (e.g., x-server-id:server-1)")
 )
 
 type Instructions struct {
@@ -90,6 +92,7 @@ func (s *server) Process(srv service_ext_proc_v3.ExternalProcessor_ProcessServer
 			if err != nil {
 				return err
 			}
+			appendDefaultHeader(headersResp)
 			resp = &service_ext_proc_v3.ProcessingResponse{
 				Response: &service_ext_proc_v3.ProcessingResponse_RequestHeaders{
 					RequestHeaders: headersResp,
@@ -210,6 +213,29 @@ func main() {
 		slog.Error("killing server", "error", err)
 		os.Exit(1)
 	}
+}
+
+// appendDefaultHeader adds the --add-header value to the response if configured.
+func appendDefaultHeader(resp *service_ext_proc_v3.HeadersResponse) {
+	if *addHeader == "" {
+		return
+	}
+	parts := strings.SplitN(*addHeader, ":", 2)
+	if len(parts) != 2 {
+		return
+	}
+	if resp.Response == nil {
+		resp.Response = &service_ext_proc_v3.CommonResponse{}
+	}
+	if resp.Response.HeaderMutation == nil {
+		resp.Response.HeaderMutation = &service_ext_proc_v3.HeaderMutation{}
+	}
+	resp.Response.HeaderMutation.SetHeaders = append(
+		resp.Response.HeaderMutation.SetHeaders,
+		&core_v3.HeaderValueOption{
+			Header: &core_v3.HeaderValue{Key: parts[0], RawValue: []byte(parts[1])},
+		},
+	)
 }
 
 func getInstructionsFromHeaders(in *service_ext_proc_v3.HttpHeaders) string {
